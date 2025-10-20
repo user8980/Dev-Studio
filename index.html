@@ -1,84 +1,495 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uz">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Habibullo | Back-End Developer</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>My Portfolio</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0a0f;--panel:#0f1018;--muted:#9aa3b2;--text:#eef2ff;--accent:#7c3aed;--accent2:#22d3ee;
+    --card:#121323;--glow:0 0 40px rgba(124,58,237,.35),0 0 80px rgba(34,211,238,.2);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;background:radial-gradient(1200px 600px at 20% -10%,rgba(124,58,237,.15),transparent),
+    radial-gradient(900px 500px at 90% 10%,rgba(34,211,238,.12),transparent),var(--bg);
+    color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial,sans-serif;
+    overflow-x:hidden;scroll-behavior:smooth
+  }
+  /* ====== Global UI ====== */
+  .container{width:min(1200px,92vw);margin-inline:auto}
+  a{color:inherit;text-decoration:none}
+  .btn{
+    position:relative;display:inline-flex;gap:.6rem;align-items:center;justify-content:center;
+    padding:.9rem 1.2rem;border:1px solid rgba(255,255,255,.12);border-radius:16px;
+    background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
+    backdrop-filter: blur(6px);
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.04), var(--glow);
+    cursor:pointer;transition:transform .2s ease, box-shadow .2s ease, background .2s ease;
+    will-change:transform
+  }
+  .btn:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 12px 30px rgba(0,0,0,.35), var(--glow)}
+  .btn.primary{border-color:rgba(124,58,237,.5);
+    background:linear-gradient(180deg,rgba(124,58,237,.85),rgba(124,58,237,.55)) padding-box,
+               linear-gradient(90deg,var(--accent),var(--accent2)) border-box}
+  .icon{width:18px;height:18px;display:inline-block}
+  /* ====== Nav ====== */
+  header{
+    position:fixed;inset:0 0 auto 0;height:72px;z-index:40;
+    background:linear-gradient(to bottom,rgba(10,10,15,.7),rgba(10,10,15,0));
+    backdrop-filter:saturate(1.3) blur(8px);border-bottom:1px solid rgba(255,255,255,.06)
+  }
+  nav{height:72px;display:flex;align-items:center;justify-content:space-between}
+  .brand{display:flex;align-items:center;gap:.7rem;font-weight:800;letter-spacing:.3px}
+  .logo{
+    width:34px;height:34px;border-radius:10px;
+    background:conic-gradient(from 210deg,var(--accent),var(--accent2),var(--accent));
+    box-shadow:0 0 30px rgba(124,58,237,.45),0 0 30px rgba(34,211,238,.25)
+  }
+  .navlinks{display:flex;gap:1rem}
+  .navlinks a{padding:.5rem .8rem;border-radius:12px;color:var(--muted)}
+  .navlinks a.active,.navlinks a:hover{background:rgba(255,255,255,.06);color:var(--text)}
+  /* ====== Cursor blob ====== */
+  .blob{
+    position:fixed;inset:auto auto 0 0;translate:-50% -50%;width:380px;height:380px;border-radius:50%;
+    pointer-events:none;z-index:0;filter:blur(60px) saturate(140%);
+    background:radial-gradient(circle at 50% 50%,rgba(124,58,237,.35),transparent 60%),
+               radial-gradient(circle at 65% 40%,rgba(34,211,238,.35),transparent 60%);
+    opacity:.6;mix-blend-mode:screen
+  }
+  /* ====== Hero ====== */
+  .section{position:relative;padding:110px 0 90px}
+  .hero{min-height:92vh;display:grid;place-items:center;padding-top:120px}
+  .stack{display:grid;gap:1.1rem;text-align:center}
+  .headline{
+    font-size:clamp(2.4rem,6vw,5rem);line-height:1.02;font-weight:900;letter-spacing:-.02em;
+    background:linear-gradient(90deg,#fff,rgba(255,255,255,.85) 60%,#c4b5fd 70%,#a78bfa 90%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;position:relative
+  }
+  .shine{
+    position:absolute;inset:0;background:linear-gradient(120deg,transparent 45%,rgba(255,255,255,.6),transparent 55%);
+    translate:-110% 0;filter:blur(8px);animation:shine 5s infinite linear
+  }
+  @keyframes shine{to{translate:110% 0}}
+  .glitch{
+    position:relative;display:inline-block;perspective:1000px;transform-style:preserve-3d
+  }
+  .glitch::before,.glitch::after{
+    content:attr(data-text);position:absolute;inset:0;transform:translateZ(-1px);
+    clip-path:inset(0 0 50% 0);color:#8b5cf6;mix-blend-mode:screen;opacity:.65;animation:gl1 2.8s infinite steps(2);
+  }
+  .glitch::after{clip-path:inset(50% 0 0 0);color:#22d3ee;animation:gl2 2.8s infinite steps(2)}
+  @keyframes gl1{50%{translate:-2px 0} 55%{translate:2px 0}}
+  @keyframes gl2{50%{translate:2px 0} 55%{translate:-2px 0}}
+  .subtitle{color:var(--muted);max-width:880px;margin-inline:auto;font-size:1.05rem}
+  .cta{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap;margin-top:1rem}
+  /* ====== Canvas background ====== */
+  canvas#net{position:fixed;inset:0;z-index:-1}
+  /* ====== Sections ====== */
+  .card{
+    background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));
+    border:1px solid rgba(255,255,255,.07);border-radius:22px;padding:1.2rem;box-shadow:var(--glow)
+  }
+  .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:1.2rem}
+  .title{font-weight:800;font-size:clamp(1.6rem,3vw,2rem);margin:0 0 .6rem}
+  .muted{color:var(--muted)}
+  /* ====== About ====== */
+  #about .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:1.6rem}
+  .about-me{padding:1.6rem}
+  .stat{
+    display:flex;align-items:center;gap:1rem;padding:1rem;border-radius:16px;background:rgba(255,255,255,.04);
+    border:1px dashed rgba(255,255,255,.12)
+  }
+  /* ====== Skills (circular) ====== */
+  .skills{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem}
+  .ring{width:170px;aspect-ratio:1;border-radius:50%;display:grid;place-items:center;margin-inline:auto;
+    background:
+      radial-gradient(closest-side,#0a0a0f 82%,transparent 83% 100%),
+      conic-gradient(var(--accent) var(--val), rgba(255,255,255,.08) 0);
+    animation:fill 2s ease forwards
+  }
+  .ring b{font:700 1.1rem/1 Inter}
+  @keyframes fill{from{--val:0turn} to{--val:calc(var(--p)*1%)}}
+  /* ====== Projects ====== */
+  .projects{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.2rem}
+  .project{
+    position:relative;overflow:hidden;border-radius:20px;background:linear-gradient(180deg,#15162a,#0f1020);
+    border:1px solid rgba(255,255,255,.08);transform-style:preserve-3d;transition:transform .2s ease;
+  }
+  .project:hover{transform:translateY(-4px)}
+  .thumb{
+    height:180px;background:
+      radial-gradient(200px 80px at 10% 10%,rgba(124,58,237,.35),transparent),
+      radial-gradient(200px 80px at 90% 30%,rgba(34,211,238,.35),transparent),
+      linear-gradient(135deg,#0f1020,#0b0c17);
+    display:grid;place-items:center;position:relative;overflow:hidden
+  }
+  .thumb::after{
+    content:"";position:absolute;inset:-40% -40% auto;height:80%;background:
+      conic-gradient(from 0deg,var(--accent),transparent 40%,var(--accent2) 60%,transparent 80%,var(--accent));
+    filter:blur(30px);opacity:.35;animation:spin 8s linear infinite
+  }
+  @keyframes spin{to{transform:rotate(1turn)}}
+  .badge{
+    position:absolute;top:12px;left:12px;padding:.35rem .6rem;border-radius:999px;font-size:.75rem;
+    background:rgba(124,58,237,.2);border:1px solid rgba(124,58,237,.45)
+  }
+  .project .content{padding:1rem 1.1rem 1.2rem}
+  .chips{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.6rem}
+  .chip{padding:.35rem .55rem;border-radius:999px;border:1px solid rgba(255,255,255,.1);font-size:.78rem;color:#cbd5e1}
+  /* ====== Timeline ====== */
+  .timeline{position:relative;margin:1.2rem 0 0;border-left:2px dashed rgba(255,255,255,.18);padding-left:1rem}
+  .titem{margin-bottom:1rem;position:relative}
+  .titem::before{
+    content:"";position:absolute;left:-11px;top:.3rem;width:10px;height:10px;border-radius:50%;
+    background:radial-gradient(circle,var(--accent2),var(--accent))
+  }
+  /* ====== Testimonials slider ====== */
+  .slider{position:relative;overflow:hidden;border-radius:18px}
+  .slides{display:flex;transition:transform .6s ease}
+  .slide{min-width:100%;padding:1.2rem}
+  /* ====== Contact ====== */
+  form{display:grid;gap:.8rem}
+  input,textarea{
+    width:100%;padding:1rem;border-radius:14px;border:1px solid rgba(255,255,255,.12);
+    background:rgba(255,255,255,.03);color:var(--text);font:inherit
+  }
+  textarea{min-height:140px;resize:vertical}
+  /* ====== Footer ====== */
+  footer{padding:40px 0;color:var(--muted);text-align:center}
+  /* ====== Scroll reveal ====== */
+  .reveal{opacity:0;transform:translateY(20px) scale(.98);filter:blur(6px);transition:all .8s cubic-bezier(.2,.7,.2,1)}
+  .reveal.in{opacity:1;transform:none;filter:none}
+  /* ====== Responsive ====== */
+  @media (max-width:900px){#about .wrap{grid-template-columns:1fr}}
+</style>
 </head>
-<body class="bg-gray-900 text-white font-sans">
+<body>
+  <canvas id="net"></canvas>
+  <div class="blob" id="blob"></div>
 
-  <!-- HERO SECTION -->
-  <section class="min-h-screen flex flex-col items-center justify-center text-center px-4">
-    <h1 class="text-5xl font-bold mb-4" data-aos="fade-down">Salom, men <span class="text-indigo-500">Habibullo</span></h1>
-    <p class="text-xl max-w-xl" data-aos="fade-up" data-aos-delay="200">
-      Men back-end dasturchiman. Server, API, ma'lumotlar bazasi va xavfsizlik — mening kuchli tomonlarim.
-    </p>
-    <a href="#projects" class="mt-8 bg-indigo-600 px-6 py-2 rounded-lg hover:bg-indigo-700 transition" data-aos="zoom-in" data-aos-delay="400">
-      Loyihalarimni ko‘rish
-    </a>
-  </section>
+  <header>
+    <nav class="container">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <span>Dev <span style="color:#a78bfa">Studio</span></span>
+      </div>
+      <div class="navlinks" id="navlinks">
+        <a href="#home" class="active">Home</a>
+        <a href="#about">About me</a>
+        <a href="#skills">My old works</a>
+        <a href="#work">My projects</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </nav>
+  </header>
 
-  <!-- ABOUT SECTION -->
-  <section class="py-20 bg-gray-800" id="about">
-    <div class="max-w-3xl mx-auto text-center" data-aos="fade-up">
-      <h2 class="text-3xl font-bold mb-4">Men haqimda</h2>
-      <p class="text-lg leading-relaxed text-gray-300">
-        Men 16 yoshli yosh dasturchiman. <span class="text-indigo-400 font-semibold">PHP, Laravel, Node.js, Express, MySQL</span> bilan ishlayman.
-        RESTful API, autentifikatsiya va xavfsiz server tomon loyihalar yaratishda tajribam bor.
-      </p>
+  <main id="home" class="hero section container">
+    <div class="stack reveal">
+      <h1 class="headline glitch" data-text="Full-Stack Web Developer">
+        <span class="shine"></span>
+        Full-Stack Web Developer
+      </h1>
+      <p class="subtitle">Performancega e’tibor, piksel-aniq dizayn va haqiqiy foydalanuvchi tajribasi. Quyida mening eng yaxshi ishlarim va texnik ko‘nikmalarim bilan tanishing.</p>
+      <div class="cta">
+        <a class="btn primary mag" href="#work">
+          <svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5l7 7-7 7" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+          Loyihalarni ko‘rish
+        </a>
+        <a class="btn mag" href="#contact">
+          <svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M21 10v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V10" stroke="white" stroke-width="2" stroke-linecap="round"/><path d="M7 9l5 3 5-3 5-3H2l5 3z" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+          Murojaat qiling
+        </a>
+      </div>
     </div>
-  </section>
+  </main>
 
-  <!-- SKILLS SECTION -->
-  <section class="py-20" id="skills">
-    <div class="max-w-4xl mx-auto text-center">
-      <h2 class="text-3xl font-bold mb-10" data-aos="fade-up">Ko‘nikmalarim</h2>
-      <div class="grid grid-cols-2 sm:grid-cols-3 gap-6">
-        <div class="bg-gray-800 p-6 rounded-lg" data-aos="zoom-in"><p>✅ PHP</p></div>
-        <div class="bg-gray-800 p-6 rounded-lg" data-aos="zoom-in"><p>✅ Laravel</p></div>
-        <div class="bg-gray-800 p-6 rounded-lg" data-aos="zoom-in"><p>✅ Node.js</p></div>
-        <div class="bg-gray-800 p-6 rounded-lg" data-aos="zoom-in"><p>✅ Express</p></div>
-        <div class="bg-gray-800 p-6 rounded-lg" data-aos="zoom-in"><p>✅ MySQL</p></div>
-        <div class="bg-gray-800 p-6 rounded-lg" data-aos="zoom-in"><p>✅ REST API</p></div>
+  <!-- ABOUT -->
+  <section id="about" class="section container">
+    <div class="wrap">
+      <div class="card reveal about-me">
+        <h2 class="title">About me</h2>
+        <p class="muted">5+ yil davomida web-ilovalar yaratib kelaman: SPA, SSR/ISR, real-time va mikroxizmatlar. TypeScript, Node.js, React/Next, PostgreSQL — mening kundalik vositalarim.</p>
+        <div class="grid" style="margin-top:1rem">
+          <div class="stat"><b>50+ </b><span class="muted">yakunlangan loyiha</span></div>
+          <div class="stat"><b>20%+ </b><span class="muted">Core Web Vitals yaxshilanishi</span></div>
+          <div class="stat"><b>10x </b><span class="muted">CI/CD deployment tezligi</span></div>
+        </div>
+        <div class="timeline">
+          <div class="titem"><b>2023—2025</b> · Senior Frontend – <span class="muted">Optimization, design systems</span></div>
+          <div class="titem"><b>2021—2023</b> · Full-Stack – <span class="muted">Node.js, GraphQL, Docker</span></div>
+          <div class="titem"><b>2019—2021</b> · Junior – <span class="muted">React, REST</span></div>
+        </div>
+      </div>
+      <div class="card reveal">
+        <h3 class="title">Demo</h3>
+        <video src="" controls poster="" style="width:100%;border-radius:14px;background:#0b0c17"></video>
+        <p class="muted">Portfolio saytimning interaktiv elementlari: 3D tilt, magnet tugmalar, scroll-reveal, zarracha fon va boshqalar.</p>
       </div>
     </div>
   </section>
 
-  <!-- PROJECTS SECTION -->
-  <section class="py-20 bg-gray-800" id="projects">
-    <div class="max-w-4xl mx-auto text-center">
-      <h2 class="text-3xl font-bold mb-10" data-aos="fade-up">Loyihalarim</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-        <div class="bg-gray-700 p-4 rounded-lg hover:scale-105 transition" data-aos="fade-right">
-          <h3 class="text-xl font-bold mb-2">🔐 Auth API (JWT)</h3>
-          <p>Node.js va JWT bilan foydalanuvchi ro‘yxatga olish, login, token yangilash API tizimi.</p>
+  <!-- SKILLS -->
+  <section id="skills" class="section container">
+    <h2 class="title reveal">Ko‘nikmalar</h2>
+    <div class="skills">
+      <div class="card reveal" style="padding:1.4rem;text-align:center">
+        <div class="ring" style="--p:92"><b>JavaScript</b></div>
+        <div class="chips"><span class="chip">ES2023</span><span class="chip">TypeScript</span><span class="chip">Rx</span></div>
+      </div>
+      <div class="card reveal" style="padding:1.4rem;text-align:center">
+        <div class="ring" style="--p:88"><b>React/Next</b></div>
+        <div class="chips"><span class="chip">SSR/ISR</span><span class="chip">RSC</span><span class="chip">Zustand</span></div>
+      </div>
+      <div class="card reveal" style="padding:1.4rem;text-align:center">
+        <div class="ring" style="--p:84"><b>Node & DB</b></div>
+        <div class="chips"><span class="chip">Nest</span><span class="chip">Postgres</span><span class="chip">Redis</span></div>
+      </div>
+      <div class="card reveal" style="padding:1.4rem;text-align:center">
+        <div class="ring" style="--p:80"><b>DevOps</b></div>
+        <div class="chips"><span class="chip">Docker</span><span class="chip">CI/CD</span><span class="chip">Cloud</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WORK -->
+  <section id="work" class="section container">
+    <h2 class="title reveal">Tanlangan loyihalar</h2>
+    <div class="projects">
+      <article class="project reveal tilt">
+        <div class="thumb">
+          <span class="badge">Realtime</span>
+          <svg width="96" height="96" viewBox="0 0 24 24" fill="none">
+            <path d="M4 4h16v16H4z" stroke="white" opacity=".8" stroke-width="1.2"/>
+            <path d="M8 12h8M8 8h8M8 16h5" stroke="white" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
         </div>
-        <div class="bg-gray-700 p-4 rounded-lg hover:scale-105 transition" data-aos="fade-left">
-          <h3 class="text-xl font-bold mb-2">📦 Product Manager</h3>
-          <p>Laravel va MySQL asosida CRUD mahsulotlarni boshqarish loyihasi.</p>
+        <div class="content">
+          <h3>Live Dashboard</h3>
+          <p class="muted">WebSocket + Worker’lar, millisekundlik yangilanishlar, 60fps animatsiya.</p>
+          <div class="chips"><span class="chip">React</span><span class="chip">WebSocket</span><span class="chip">Vite</span></div>
+        </div>
+      </article>
+
+      <article class="project reveal tilt">
+        <div class="thumb">
+          <span class="badge">E-Commerce</span>
+          <svg width="96" height="96" viewBox="0 0 24 24" fill="none">
+            <path d="M6 6h15l-2 9H7L6 6z" stroke="white" opacity=".9" stroke-width="1.4"/>
+            <circle cx="9" cy="19" r="1.5" fill="white"/><circle cx="17" cy="19" r="1.5" fill="white"/>
+          </svg>
+        </div>
+        <div class="content">
+          <h3>Shop Platform</h3>
+          <p class="muted">SSR + Edge caching, A/B testlari va 95+ Lighthouse.</p>
+          <div class="chips"><span class="chip">Next</span><span class="chip">Prisma</span><span class="chip">Stripe</span></div>
+        </div>
+      </article>
+
+      <article class="project reveal tilt">
+        <div class="thumb">
+          <span class="badge">AI</span>
+          <svg width="96" height="96" viewBox="0 0 24 24" fill="none">
+            <path d="M12 3a9 9 0 100 18 9 9 0 000-18z" stroke="white" opacity=".9" stroke-width="1.4"/>
+            <path d="M8 12h8M12 8v8" stroke="white" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="content">
+          <h3>AI Assistant</h3>
+          <p class="muted">RAG + function-calling, queue bilan masshtablash.</p>
+          <div class="chips"><span class="chip">Node</span><span class="chip">OpenAI</span><span class="chip">Redis</span></div>
+        </div>
+      </article>
+
+      <article class="project reveal tilt">
+        <div class="thumb">
+          <span class="badge">3D</span>
+          <svg width="96" height="96" viewBox="0 0 24 24" fill="none">
+            <path d="M3 8l9-5 9 5-9 5-9-5zM3 8v8l9 5 9-5V8" stroke="white" stroke-width="1.2"/>
+          </svg>
+        </div>
+        <div class="content">
+          <h3>3D Showcase</h3>
+          <p class="muted">Canvas shadlari, parallax va mouse-tilt integratsiyasi.</p>
+          <div class="chips"><span class="chip">Canvas</span><span class="chip">GLSL*</span><span class="chip">UX</span></div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="section container">
+    <h2 class="title reveal">Our customer`s opinions</h2>
+    <div class="slider card reveal">
+      <div class="slides" id="slides">
+        <div class="slide">
+          <p>“Performans va dizayn – mukammal balans. KPI’lar sezilarli oshdi.” <b>— Acme Inc.</b></p>
+        </div>
+        <div class="slide">
+          <p>“Komandamizga dizayn system olib kirildi, delivery 3 barobar tezlashdi.” <b>— Pixel Co.</b></p>
+        </div>
+        <div class="slide">
+          <p>“SEO va Web Vitals uchun qilgan optimizatsiyalari top daraja.” <b>— GrowthLab</b></p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- CONTACT SECTION -->
-  <section class="py-20" id="contact">
-    <div class="max-w-xl mx-auto text-center" data-aos="fade-up">
-      <h2 class="text-3xl font-bold mb-6">Bog‘lanish</h2>
-      <p class="mb-4">GitHub: <a href="#" class="text-indigo-400 hover:underline">github.com/sizning-username</a></p>
-      <p class="mb-4">Telegram: <a href="#" class="text-indigo-400 hover:underline">@sizning_username</a></p>
-      <p>Email: <span class="text-gray-300">youremail@example.com</span></p>
+  <!-- CONTACT -->
+  <section id="contact" class="section container">
+    <div class="grid" style="grid-template-columns:1.1fr .9fr">
+      <div class="card reveal">
+        <h2 class="title">Contact</h2>
+        <form onsubmit="event.preventDefault(); toast('Xabaringiz jo‘natildi! (demo)')">
+          <input required placeholder="First name / Last name">
+          <input required type="email" placeholder="Email">
+          <textarea placeholder="Send message..!"></textarea>
+          <button class="btn primary mag" type="submit">
+            <svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M3 12l18-9-9 18-2-7-7-2z" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+            Send
+          </button>
+        </form>
+      </div>
+      <div class="card reveal">
+        <h3 class="title">For Contact</h3>
+        <p class="muted">Email: habibullomuzrobbayev336@gmail.com<br>Telegram: @Simple_8908<br>GitHub: github.com/username</p>
+        <p class="muted">CV: <a class="btn" href="#" onclick="toast('CV yuklanishi uchun fayl qo‘shing')">Download</a></p>
+      </div>
     </div>
   </section>
 
-  <footer class="py-6 text-center text-gray-500">
-    © 2025 Habibullo. Barcha huquqlar himoyalangan.
+  <footer>
+    © <span id="year"></span> Dev Studio · Performance ✦ Accessibility ✦ Aesthetics
   </footer>
 
-  <!-- JS Animatsiya -->
-  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-  <script>AOS.init();</script>
+<script>
+/* ======= Canvas particle network ======= */
+(function(){
+  const c = document.getElementById('net'), ctx = c.getContext('2d',{alpha:true});
+  let w,h, DPR = Math.max(1, window.devicePixelRatio||1);
+  const P = []; const MAX=110; let mouse={x:0,y:0,active:false};
+  function resize(){
+    w=window.innerWidth;h=window.innerHeight; c.width=w*DPR; c.height=h*DPR; c.style.width=w+'px'; c.style.height=h+'px'; ctx.setTransform(DPR,0,0,DPR,0,0);
+  }
+  window.addEventListener('resize',resize); resize();
+  function spawn(n=MAX){
+    P.length=0;
+    for(let i=0;i<n;i++){
+      P.push({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-.5)*.6,vy:(Math.random()-.5)*.6,r:1+Math.random()*2});
+    }
+  }
+  spawn();
+  window.addEventListener('mousemove',e=>{mouse.x=e.clientX; mouse.y=e.clientY; mouse.active=true});
+  window.addEventListener('mouseout',()=>mouse.active=false);
+
+  function tick(){
+    ctx.clearRect(0,0,w,h);
+    for(const p of P){
+      p.x+=p.vx; p.y+=p.vy;
+      if(p.x<0||p.x>w) p.vx*=-1;
+      if(p.y<0||p.y>h) p.vy*=-1;
+      // mouse force
+      if(mouse.active){
+        const dx=p.x-mouse.x, dy=p.y-mouse.y, d=Math.hypot(dx,dy);
+        if(d<130){ p.vx += dx/d*.03; p.vy += dy/d*.03; }
+      }
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle="rgba(255,255,255,.9)"; ctx.fill();
+    }
+    // lines
+    for(let i=0;i<P.length;i++){
+      for(let j=i+1;j<P.length;j++){
+        const a=P[i], b=P[j]; const dx=a.x-b.x, dy=a.y-b.y; const d=dx*dx+dy*dy;
+        if(d<110*110){
+          ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y);
+          ctx.strokeStyle=`rgba(162,140,255,${1-d/(110*110)})`; ctx.lineWidth=.7; ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(tick);
+  }
+  tick();
+})();
+
+/* ======= Cursor blob follow ======= */
+(function(){
+  const blob = document.getElementById('blob');
+  let x=window.innerWidth/2, y=window.innerHeight/2, tx=x, ty=y;
+  window.addEventListener('pointermove',e=>{tx=e.clientX; ty=e.clientY});
+  function loop(){
+    x += (tx - x) * 0.08;
+    y += (ty - y) * 0.08;
+    blob.style.left = x + 'px';
+    blob.style.top  = y + 'px';
+    requestAnimationFrame(loop);
+  }
+  loop();
+})();
+
+/* ======= Scroll reveal + nav active ======= */
+(function(){
+  const els = document.querySelectorAll('.reveal');
+  const IO = new IntersectionObserver((entries)=>{
+    for(const e of entries){ if(e.isIntersecting){ e.target.classList.add('in'); IO.unobserve(e.target); } }
+  },{threshold:.12, rootMargin:"0px 0px -10% 0px"});
+  els.forEach(el=>IO.observe(el));
+
+  const sections=[...document.querySelectorAll('main,.section')];
+  const links=[...document.querySelectorAll('.navlinks a')];
+  const SPY = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        const id = e.target.getAttribute('id')||'home';
+        links.forEach(a=>a.classList.toggle('active', a.getAttribute('href')==='#'+id));
+      }
+    });
+  },{threshold:.5});
+  sections.forEach(s=>SPY.observe(s));
+})();
+
+/* ======= Magnetic buttons ======= */
+document.querySelectorAll('.mag').forEach(btn=>{
+  btn.addEventListener('mousemove', e=>{
+    const r = btn.getBoundingClientRect();
+    const x = e.clientX - r.left - r.width/2, y = e.clientY - r.top - r.height/2;
+    btn.style.transform = `translate(${x*0.08}px, ${y*0.12}px) scale(1.02)`;
+  });
+  btn.addEventListener('mouseleave', ()=> btn.style.transform='translate(0,0)');
+});
+
+/* ======= 3D tilt cards ======= */
+document.querySelectorAll('.tilt').forEach(card=>{
+  let r = null;
+  card.addEventListener('pointermove', e=>{
+    r = card.getBoundingClientRect();
+    const px = (e.clientX - r.left)/r.width, py=(e.clientY - r.top)/r.height;
+    const rx = (py-.5)*10, ry = (px-.5)*-12;
+    card.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg) translateY(-4px)`;
+  });
+  card.addEventListener('pointerleave', ()=> card.style.transform='translateY(0)');
+});
+
+/* ======= Slider ======= */
+(function(){
+  const slides = document.getElementById('slides');
+  let i=0; setInterval(()=>{ i=(i+1)%3; slides.style.transform=`translateX(-${i*100}%)` }, 3800);
+})();
+
+/* ======= Toast ======= */
+function toast(msg){
+  const t = document.createElement('div');
+  t.textContent = msg; t.style.cssText = `
+    position:fixed;left:50%;bottom:28px;transform:translateX(-50%);
+    background:linear-gradient(180deg,rgba(124,58,237,.9),rgba(34,211,238,.9));
+    color:white;padding:.8rem 1rem;border-radius:999px;z-index:50;box-shadow:${'0 10px 30px rgba(0,0,0,.35)'}
+  `;
+  document.body.appendChild(t); setTimeout(()=>t.remove(),2200);
+}
+
+document.getElementById('year').textContent = new Date().getFullYear();
+</script>
 </body>
 </html>
